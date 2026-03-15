@@ -4,7 +4,18 @@ pipeline {
     stages {
         stage('Build') {
             steps {
+                // 加 sudo 提权，一次性安装 make + gcc（make 必须依赖编译工具）
+                sh '''
+                    apt-get update -y
+                    apt-get install -y make gcc
+                '''
+                
+                // 测试 make 是否安装成功
+                sh 'make --version'
+                
+                // 执行 make
                 sh 'make'
+                
                 archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
             }
         }
